@@ -1,7 +1,11 @@
 # 🍏 fruit-box-bot
 
 이 프로젝트는 **"Fruit Box" 게임 자동화를 위한 Python 기반의 봇**입니다.  
+
 스크린 캡처, 숫자 인식, 자동 드래그를 통해 게임을 자동으로 진행합니다.
+
+![KakaoTalk_20250308_214512436-ezgif com-video-to-gif-converter (1)](https://github.com/user-attachments/assets/f4e299f1-6bc4-400f-bc08-60543ba02e7d)
+
 게임은 [해당 링크](https://www.gamesaien.com/game/fruit_box_a/)에서 플레이할 수 있습니다.
 
 ---
