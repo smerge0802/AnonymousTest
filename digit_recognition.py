@@ -3,8 +3,41 @@ import sys
 import cv2
 import numpy as np
 from collections import Counter
-
 from constant import GRID_ROWS, GRID_COLS, APPLE_SIZE
+
+import os
+import cv2
+
+def get_go_reset(image):
+    """img 폴더에서 go, reset 템플릿을 찾고 좌표 반환"""
+    coords = []
+    img_dir = "img"  # 이미지 폴더 경로
+    threshold = 0.8  # 매칭 유사도 임계값
+
+    for i in ["go", "reset"]:
+        template_path = os.path.join(img_dir, f"{i}.png")
+        template = cv2.imread(template_path, cv2.IMREAD_GRAYSCALE)
+
+        if template is None:
+            print(f"❌ 템플릿 {i}.png을(를) 찾을 수 없습니다.")
+            continue  # 해당 템플릿이 없으면 다음으로 넘어감
+
+        # 템플릿 매칭 수행
+        result = cv2.matchTemplate(image, template, cv2.TM_CCOEFF_NORMED)
+        min_val, max_val, min_loc, max_loc = cv2.minMaxLoc(result)
+
+        # 유사도가 낮으면 무시
+        if max_val < threshold:
+            print(f"⚠️ {i} 버튼을 찾지 못했습니다. (유사도: {max_val:.2f})")
+            continue
+
+        # 중심 좌표 계산
+        h, w = template.shape[:2]
+        center_x, center_y = max_loc[0] + w / 2, max_loc[1] + h / 2
+        coords.append((center_x, center_y))
+
+    return coords  # 최종 좌표 반환
+
 
 def load_templates():
     """img 폴더에서 1.png ~ 9.png 숫자 템플릿 로드"""
@@ -73,18 +106,11 @@ def check_digit_balance(digit_data):
     all_conditions_met = condition_1 and condition_2 and condition_3 and condition_4
 
     # 🔹 4. 결과 출력
-    print("\n📌\t조건 검증 중...")
+    print("📌\t조건 검증 중...")
     print(f"✅\t1의 개수 ({digit_counts.get(1, 0)}) >= 9의 개수 ({digit_counts.get(9, 0)}) → {'✔️' if condition_1 else '❌'}")
     print(f"✅\t2의 개수 ({digit_counts.get(2, 0)}) >= 8의 개수 ({digit_counts.get(8, 0)}) → {'✔️' if condition_2 else '❌'}")
     print(f"✅\t3의 개수 ({digit_counts.get(3, 0)}) >= 7의 개수 ({digit_counts.get(7, 0)}) → {'✔️' if condition_3 else '❌'}")
     print(f"✅\t4의 개수 ({digit_counts.get(4, 0)}) >= 6의 개수 ({digit_counts.get(6, 0)}) → {'✔️' if condition_4 else '❌'}")
-    
-    if not all_conditions_met :
-        print("🔴\t최종 결과: 조건 불만족, 클리어 불가능, 진행? (Y/n)")
-        user_input = input("👉\t입력: ").strip().lower()  # 사용자 입력 받기
-        if user_input == "n":
-            print("🚪\t프로그램 종료")
-            sys.exit(0)  # 프로그램 즉시 종료
 
     return all_conditions_met  # 모든 조건을 만족하면 True, 아니면 False
     
