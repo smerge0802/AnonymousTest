@@ -10,6 +10,10 @@ def capture_screen():
     screenshot = pyautogui.screenshot(region=(0,0, screen_width, screen_height))
     screenshot = np.array(screenshot)
     screenshot = cv2.cvtColor(screenshot, cv2.COLOR_RGB2BGR)
+
+    # cv2.imwrite("captured_screen.png", screenshot)
+    # print("📷 캡처된 화면이 'captured_screen.png' 파일로 저장됨")
+
     return screenshot
 
 def preprocess_image(image):
@@ -18,7 +22,7 @@ def preprocess_image(image):
     gray = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
     _, otsu_thresh = cv2.threshold(gray, 0, 255, cv2.THRESH_OTSU)
 
-    # 🔍 전처리된 이미지 확인
+    #🔍전처리된 이미지 확인
     # cv2.imshow("Preprocessed Image", otsu_thresh)
     # cv2.waitKey(0)
     # cv2.destroyAllWindows()
